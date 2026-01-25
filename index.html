@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KDC Club S2 클러버 성향 테스트 | Achievement Unlocked</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    :root {
+      --bg-dark: #0a0a0f;
+      --bg-card: #12121a;
+      --primary: #6366f1;
+      --primary-glow: rgba(99, 102, 241, 0.3);
+      --secondary: #22d3ee;
+      --accent: #f472b6;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: rgba(255,255,255,0.08);
+      --success: #10b981;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    .container { max-width: 480px; margin: 0 auto; padding: 20px; min-height: 100vh; }
+    .header { text-align: center; padding: 30px 0; }
+    .header-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 6px 16px; border-radius: 20px;
+      font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 16px;
+    }
+    .header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 28px; font-weight: 700;
+      background: linear-gradient(135deg, #fff 0%, var(--secondary) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .header p { color: var(--text-muted); font-size: 14px; }
+    .lang-toggle { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; }
+    .lang-btn {
+      padding: 8px 16px; border: 1px solid var(--border);
+      background: transparent; color: var(--text-muted);
+      border-radius: 20px; cursor: pointer; font-size: 13px; transition: all 0.3s;
+    }
+    .lang-btn.active { background: var(--primary); border-color: var(--primary); color: white; }
+    .progress-container { margin-bottom: 24px; }
+    .progress-text { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+    .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 3px; transition: width 0.5s ease; }
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px; margin-bottom: 16px;
+      animation: fadeIn 0.5s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .question-number { font-family: 'Space Grotesk', sans-serif; font-size: 12px; color: var(--secondary); margin-bottom: 12px; letter-spacing: 2px; }
+    .question-text { font-size: 18px; font-weight: 700; line-height: 1.5; margin-bottom: 24px; }
+    .options { display: flex; flex-direction: column; gap: 12px; }
+    .option {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 16px; background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border); border-radius: 12px;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .option:hover { background: rgba(99, 102, 241, 0.1); border-color: var(--primary); transform: translateX(4px); }
+    .option-letter {
+      flex-shrink: 0; width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--primary); border-radius: 8px;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 14px;
+    }
+    .option-text { font-size: 15px; line-height: 1.5; padding-top: 2px; }
+    .btn {
+      width: 100%; padding: 16px; border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      transition: all 0.3s; margin-top: 12px;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), #8b5cf6); color: white; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px var(--primary-glow); }
+    .btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-secondary:hover { background: rgba(255,255,255,0.05); }
+    .btn-share { background: linear-gradient(135deg, var(--secondary), #34d399); color: #0a0a0f; }
+    .btn-share:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(34, 211, 238, 0.3); }
+    .btn-save { background: linear-gradient(135deg, var(--accent), #f59e0b); color: white; }
+    .btn-save:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(244, 114, 182, 0.3); }
+    .share-buttons { display: flex; gap: 12px; margin-top: 16px; }
+    .share-buttons .btn { flex: 1; margin-top: 0; }
+    .toast {
+      position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+      background: var(--success); color: white; padding: 12px 24px;
+      border-radius: 8px; font-size: 14px; font-weight: 500;
+      opacity: 0; transition: opacity 0.3s; z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .toast.show { opacity: 1; }
+    .result-header { text-align: center; padding: 20px 0; }
+    .result-image-large { 
+      width: 100%; 
+      max-width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 20px; 
+      object-fit: cover; 
+      margin-bottom: 20px;
+      border: 4px solid var(--primary);
+      box-shadow: 0 12px 40px var(--primary-glow);
+    }
+    .result-image { 
+      width: 120px; height: 120px; 
+      border-radius: 16px; 
+      object-fit: cover; 
+      margin-bottom: 16px;
+      border: 3px solid var(--primary);
+      box-shadow: 0 8px 24px var(--primary-glow);
+    }
+    .result-emoji { font-size: 64px; display: block; margin-bottom: 16px; }
+    .result-code {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 6px 16px; border-radius: 20px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 14px; font-weight: 700; margin-bottom: 12px;
+    }
+    .result-code-small {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px; 
+      color: var(--text-muted);
+      margin-top: 12px;
+      opacity: 0.6;
+      letter-spacing: 1px;
+    }
+    .result-name { font-size: 28px; font-weight: 900; margin-bottom: 4px; }
+    .result-name-en { font-family: 'Space Grotesk', sans-serif; font-size: 14px; color: var(--text-muted); margin-bottom: 12px; }
+    .result-subtitle { font-size: 16px; color: var(--secondary); font-weight: 500; margin-bottom: 0; }
+    .result-desc { font-size: 15px; line-height: 1.8; color: var(--text); margin: 20px 0; }
+    .quote-box {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(34, 211, 238, 0.1));
+      border-left: 3px solid var(--primary);
+      padding: 16px 20px; border-radius: 0 12px 12px 0;
+      font-style: italic; color: var(--text);
+    }
+    .section-title { font-size: 16px; font-weight: 700; color: var(--secondary); margin-bottom: 16px; }
+    .strength-list { list-style: none; }
+    .strength-item {
+      padding: 12px 16px; background: rgba(16, 185, 129, 0.1);
+      border-radius: 8px; margin-bottom: 8px; font-size: 14px;
+    }
+    .strength-item::before { content: "✓ "; color: var(--success); font-weight: bold; }
+    .growth-box {
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 12px; padding: 16px;
+      font-size: 14px; line-height: 1.7;
+    }
+    .weakness-box {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-radius: 12px; padding: 16px;
+      font-size: 14px; line-height: 1.7;
+    }
+    .match-card {
+      background: linear-gradient(135deg, rgba(244, 114, 182, 0.1), rgba(99, 102, 241, 0.1));
+      border: 1px solid rgba(244, 114, 182, 0.2);
+      border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 12px;
+    }
+    .match-label { font-size: 12px; color: var(--accent); margin-bottom: 8px; }
+    .match-type { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .match-name { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; }
+    .match-name-large { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .match-code-small { font-family: 'Space Grotesk', sans-serif; font-size: 11px; color: var(--text-muted); opacity: 0.6; margin-bottom: 12px; }
+    .match-reason { font-size: 13px; color: var(--text); line-height: 1.6; }
+    .club-fit { display: flex; flex-wrap: wrap; gap: 8px; }
+    .club-tag {
+      padding: 8px 14px;
+      background: rgba(34, 211, 238, 0.1);
+      border: 1px solid rgba(34, 211, 238, 0.2);
+      border-radius: 20px; font-size: 13px; color: var(--secondary);
+    }
+    .keyword-container { display: flex; flex-wrap: wrap; gap: 8px; }
+    .keyword {
+      padding: 6px 12px; background: var(--bg-dark);
+      border: 1px solid var(--border); border-radius: 16px;
+      font-size: 13px; color: var(--text-muted);
+    }
+    .score-bar-container { display: flex; flex-direction: column; gap: 16px; }
+    .score-item { width: 100%; }
+    .score-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+    .score-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; background: var(--border); }
+    .score-left { background: linear-gradient(90deg, var(--primary), #8b5cf6); }
+    .score-right { background: linear-gradient(90deg, var(--secondary), #34d399); }
+    .type-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .type-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px; text-align: center;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .type-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+    .type-card.highlight { border-color: var(--accent); background: rgba(244, 114, 182, 0.1); }
+    .type-emoji { font-size: 32px; margin-bottom: 8px; }
+    .type-thumb { 
+      width: 48px; height: 48px; 
+      border-radius: 8px; 
+      object-fit: cover; 
+      margin-bottom: 8px;
+      border: 2px solid var(--border);
+    }
+    .type-card:hover .type-thumb { border-color: var(--primary); }
+    .type-card.highlight .type-thumb { border-color: var(--accent); }
+    .type-code-small { font-family: 'Space Grotesk', sans-serif; font-size: 11px; color: var(--secondary); margin-bottom: 4px; }
+    .type-name-small { font-size: 13px; font-weight: 700; }
+    .start-icon { font-size: 80px; text-align: center; margin-bottom: 24px; }
+    .start-title { font-size: 24px; font-weight: 900; text-align: center; margin-bottom: 8px; }
+    .start-subtitle { text-align: center; color: var(--text-muted); margin-bottom: 24px; }
+    .info-list { margin-bottom: 24px; }
+    .info-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .info-icon { font-size: 20px; }
+    .loading { text-align: center; padding: 60px 20px; }
+    .loading-spinner {
+      width: 50px; height: 50px;
+      border: 3px solid var(--border); border-top-color: var(--primary);
+      border-radius: 50%; animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* ============ 반응형 스타일 (태블릿/PC) ============ */
+    @media (min-width: 768px) {
+      .container { max-width: 640px; padding: 40px; }
+      .header { padding: 40px 0; }
+      .header-badge { font-size: 14px; padding: 8px 20px; }
+      .header h1 { font-size: 32px; }
+      .header p { font-size: 16px; }
+      .card { padding: 32px; border-radius: 20px; }
+      .question-text { font-size: 22px; }
+      .option { padding: 20px; }
+      .option-text { font-size: 16px; }
+      .result-image-large { width: 100%; max-width: 100%; height: auto; aspect-ratio: 1 / 1; }
+      .result-name { font-size: 32px; }
+      .result-subtitle { font-size: 18px; }
+      .result-desc { font-size: 16px; }
+      .type-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      .match-card { padding: 24px; }
+    }
+    
+    @media (min-width: 1024px) {
+      .container { max-width: 720px; padding: 50px; }
+      .header { padding: 50px 0; }
+      .header-badge { font-size: 15px; padding: 10px 24px; }
+      .header h1 { font-size: 36px; }
+      .header p { font-size: 18px; }
+      .card { padding: 36px; margin-bottom: 20px; }
+      .question-number { font-size: 14px; }
+      .question-text { font-size: 24px; margin-bottom: 32px; }
+      .options { gap: 16px; }
+      .option { padding: 22px; border-radius: 16px; }
+      .option-letter { width: 32px; height: 32px; font-size: 16px; }
+      .option-text { font-size: 17px; }
+      .btn { padding: 18px; font-size: 17px; border-radius: 14px; }
+      .result-image-large { width: 100%; max-width: 100%; height: auto; aspect-ratio: 1 / 1; border-radius: 24px; }
+      .result-name { font-size: 36px; }
+      .result-name-en { font-size: 16px; }
+      .result-subtitle { font-size: 20px; }
+      .result-desc { font-size: 17px; line-height: 1.9; }
+      .quote-box { padding: 20px 24px; font-size: 16px; }
+      .section-title { font-size: 18px; }
+      .strength-item { padding: 14px 20px; font-size: 15px; }
+      .growth-box, .weakness-box { padding: 20px; font-size: 15px; }
+      .type-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+      .type-card { padding: 20px; }
+      .type-thumb { width: 56px; height: 56px; }
+      .type-name-small { font-size: 14px; }
+      .match-name-large { font-size: 22px; }
+      .match-reason { font-size: 14px; }
+      .club-tag { padding: 10px 18px; font-size: 14px; }
+      .keyword { padding: 8px 14px; font-size: 14px; }
+      .score-label { font-size: 13px; }
+      .score-bar { height: 10px; }
+      .start-icon { font-size: 100px; }
+      .start-title { font-size: 28px; }
+      .start-subtitle { font-size: 16px; }
+      .info-item { font-size: 15px; padding: 14px 0; }
+    }
+    
+    /* 큰 화면에서 중앙 정렬 효과 */
+    @media (min-width: 1200px) {
+      body { 
+        display: flex; 
+        justify-content: center; 
+        align-items: flex-start;
+        padding: 20px 0;
+      }
+      .container { 
+        max-width: 800px;
+        background: rgba(18, 18, 26, 0.5);
+        border-radius: 32px;
+        border: 1px solid var(--border);
+        min-height: auto;
+        margin: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-badge">KDC CLUB<br>Connection Found</div>
+      <h1 id="headerTitle">나의 클러버 성향을 발견하세요</h1>
+      <p id="headerSubtitle">Discover Your Clubber Type</p>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('ko')">한국어</button>
+      <button class="lang-btn" onclick="setLang('en')">English</button>
+    </div>
+    <div id="app"></div>
+  </div>
+
+<script>
+// ============ 상태 관리 ============
+let currentLang = 'ko';
+let currentQuestion = 0;
+let scores = { T: 0, P: 0, S: 0, E: 0, So: 0, Ex: 0, A: 0, I: 0 };
+
+// ============ 다국어 텍스트 ============
+const texts = {
+  ko: {
+    startTitle: "나의 클러버 유형은?",
+    startSubtitle: "12개의 질문으로 당신의 성향 유형을 찾아보세요",
+    questionCount: "12문항",
+    time: "약 3분 소요",
+    start: "테스트 시작하기",
+    question: "QUESTION",
+    strengths: "💪 강점",
+    weakness: "⚠️ 약점",
+    growth: "🌱 성장 포인트",
+    bestMatch: "💕 찾아보세요!",
+    clubFit: "🎯 추천 클럽",
+    keywords: "🏷️ 키워드",
+    viewAll: "전체 유형 보기",
+    restart: "다시 테스트하기",
+    back: "결과로 돌아가기",
+    loading: "분석 중...",
+    yourType: "당신은",
+    saveImage: "📷 이미지 저장",
+    shareResult: "🔗 결과 공유",
+    copySuccess: "링크가 복사되었습니다!",
+    copyFail: "복사 실패. 직접 URL을 복사해주세요.",
+    saving: "이미지 생성 중..."
+  },
+  en: {
+    startTitle: "What's Your Clubber Type?",
+    startSubtitle: "Find your tendency type with 12 questions",
+    questionCount: "12 Questions",
+    time: "About 3 min",
+    start: "Start Test",
+    question: "QUESTION",
+    strengths: "💪 Strengths",
+    weakness: "⚠️ Weakness",
+    growth: "🌱 Growth Point",
+    bestMatch: "💕 Find Them!",
+    clubFit: "🎯 Recommended Clubs",
+    keywords: "🏷️ Keywords",
+    viewAll: "View All Types",
+    restart: "Restart Test",
+    back: "Back to Result",
+    loading: "Analyzing...",
+    yourType: "You are",
+    saveImage: "📷 Save Image",
+    shareResult: "🔗 Share Result",
+    copySuccess: "Link copied!",
+    copyFail: "Copy failed. Please copy the URL manually.",
+    saving: "Creating image..."
+  }
+};
+
+function t(key) { return texts[currentLang][key]; }
+
+// ============ 질문 데이터 (12문항 3지선다 + 가중치) ============
+const questions = [
+  // [축 1: 대상] Tech(T) vs People(P) - Q1~Q3
+  {
+    id: 1,
+    text: { ko: "클럽 활동 중 나를 더 설레게 만드는 순간은?", en: "What moment excites you most during club activities?" },
+    options: [
+      { text: { ko: "🤖 몰랐던 기술의 원리와 사용법을 알게됐을 때", en: "🤖 When I learn principles and usage of unknown technology" }, scores: { T: 2 } },
+      { text: { ko: "👋 마음이 통하는 동료를 새로 알게됐을 때", en: "👋 When I meet a like-minded colleague" }, scores: { P: 2 } },
+      { text: { ko: "✨ 새로운 기술을 매개로 사람들과 즐겁게 소통할 때", en: "✨ When communicating joyfully with people through new technology" }, scores: { T: 1, P: 1 } }
+    ]
+  },
+  {
+    id: 2,
+    text: { ko: "클럽의 결과물을 자랑한다면 무엇을 보여주고 싶나요?", en: "What would you show off as your club's achievement?" },
+    options: [
+      { text: { ko: "🛠️ 내가 직접 구축한 자동화 툴이나 정리한 자료", en: "🛠️ Automation tools I built or materials I organized" }, scores: { T: 2 } },
+      { text: { ko: "🫂 우리 팀의 남다른 유대감과 활발한 분위기", en: "🫂 Our team's special bond and lively atmosphere" }, scores: { P: 2 } },
+      { text: { ko: "📈 기술적 성취와 팀의 성장 과정이 담긴 활동 스토리", en: "📈 Activity story containing technical achievements and team growth" }, scores: { T: 1, P: 1 } }
+    ]
+  },
+  {
+    id: 3,
+    text: { ko: "프로젝트 도중 문제가 생겼을 때, 내가 먼저 살피는 것은?", en: "When a problem occurs during a project, what do you check first?" },
+    options: [
+      { text: { ko: "⚙️ 로직이나 시스템, 설정값에 오류가 없는지 확인", en: "⚙️ Check for errors in logic, system, or settings" }, scores: { T: 2 } },
+      { text: { ko: "💬 팀원들의 소통 내용이나 전달 방식에 오해가 없는지 확인", en: "💬 Check for misunderstandings in team communication" }, scores: { P: 2 } },
+      { text: { ko: "🧩 '프로세스'나 '운영 방식'이 꼬이진 않았는지 확인", en: "🧩 Check if process or operation method got tangled" }, scores: { T: 1, P: 1 } }
+    ]
+  },
+  // [축 2: 접근] Structural(S) vs Experimental(E) - Q4~Q6
+  {
+    id: 4,
+    text: { ko: "처음 접하는 도구나 게임을 마주했을 때 나의 방식은?", en: "How do you approach a new tool or game?" },
+    options: [
+      { text: { ko: "📖 가이드를 정독하며 전체 구조를 먼저 파악해요", en: "📖 I read the guide thoroughly to understand the structure first" }, scores: { S: 2 } },
+      { text: { ko: "🕹️ 일단 이것저것 눌러보며 몸으로 직접 익혀요", en: "🕹️ I just press buttons and learn hands-on" }, scores: { E: 2 } },
+      { text: { ko: "📝 핵심만 빠르게 훑고, 바로 실습하며 보완해요", en: "📝 I quickly skim the essentials, then practice and supplement" }, scores: { S: 1, E: 1 } }
+    ]
+  },
+  {
+    id: 5,
+    text: { ko: "아이디어를 실행에 옮길 때, 나의 스타일은?", en: "What's your style when executing an idea?" },
+    options: [
+      { text: { ko: "🗓️ 전체 구조와 단계별 계획을 먼저 잡고 시작해요", en: "🗓️ I set the overall structure and step-by-step plan first" }, scores: { S: 2 } },
+      { text: { ko: "🚀 완벽하지 않아도 결과물을 먼저 만들어보고 수정해요", en: "🚀 I create a result first even if imperfect, then revise" }, scores: { E: 2 } },
+      { text: { ko: "💡 큰 틀만 잡고, 일단 실행하며 디테일을 채워나가요", en: "💡 I set the big picture, execute, and fill in details along the way" }, scores: { S: 1, E: 1 } }
+    ]
+  },
+  {
+    id: 6,
+    text: { ko: "내가 생각하는 가장 효율적인 학습 방법은?", en: "What's the most efficient learning method in your opinion?" },
+    options: [
+      { text: { ko: "🧐 탄탄한 이론을 공부해 기본기부터 제대로 쌓는 것", en: "🧐 Building a solid foundation by studying theory properly" }, scores: { S: 2 } },
+      { text: { ko: "🛠️ 수많은 '삽질'과 시행착오로 노하우를 터득하는 것", en: "🛠️ Learning know-how through trial and error" }, scores: { E: 2 } },
+      { text: { ko: "📚 이론을 배우자마자 실제 프로젝트에 바로 투입해 보는 것", en: "📚 Applying theory to real projects immediately after learning" }, scores: { S: 1, E: 1 } }
+    ]
+  },
+  // [축 3: 목적] Solve(So) vs Explore(Ex) - Q7~Q9
+  {
+    id: 7,
+    text: { ko: "클럽 활동에 참여하게 된 결정적인 이유는?", en: "What was the decisive reason for joining club activities?" },
+    options: [
+      { text: { ko: "💡 업무 역량을 향상시키고 실무 문제를 해결하고 싶어서", en: "💡 To improve work skills and solve practical problems" }, scores: { So: 2 } },
+      { text: { ko: "🤩 주제가 너무 재밌어 보이고, 내 호기심을 자극해서", en: "🤩 The topic looked fun and stimulated my curiosity" }, scores: { Ex: 2 } },
+      { text: { ko: "🌟 흥미로운 주제를 탐구하면서 업무에도 적용해보고 싶어서", en: "🌟 To explore interesting topics while applying them to work" }, scores: { So: 1, Ex: 1 } }
+    ]
+  },
+  {
+    id: 8,
+    text: { ko: "업무와 무관하지만 흥미로운 주제를 발견했다면?", en: "What if you find an interesting topic unrelated to work?" },
+    options: [
+      { text: { ko: "⏱️ 우선 메모해 두었다가 업무에 적용할 부분이 보이면 파고들어요", en: "⏱️ Note it first, dive in when I see work applications" }, scores: { So: 2 } },
+      { text: { ko: "🔍 쓸모를 따지기보다 내 '덕력'이 이끄는 대로 파고들어요", en: "🔍 I dive in following my passion rather than usefulness" }, scores: { Ex: 2 } },
+      { text: { ko: "🔗 새로운 주제에서도 생각지 못한 업무 인사이트를 찾아내요", en: "🔗 I find unexpected work insights even in new topics" }, scores: { So: 1, Ex: 1 } }
+    ]
+  },
+  {
+    id: 9,
+    text: { ko: "클럽 활동이 끝난 후, 가장 뿌듯함을 느끼는 지점은?", en: "When do you feel most proud after club activities end?" },
+    options: [
+      { text: { ko: "🎯 \"진짜 유용하다!\"는 말을 들을 만큼 실질적 도움이 되었을 때", en: "🎯 When I provided practical help worthy of 'This is really useful!'" }, scores: { So: 2 } },
+      { text: { ko: "🌈 몰입의 즐거움을 경험하며 새로운 인사이트를 얻었을 때", en: "🌈 When I gained new insights while experiencing the joy of immersion" }, scores: { Ex: 2 } },
+      { text: { ko: "💎 새로운 발견을 하고 동료들과 함께 나누기까지 했을 때", en: "💎 When I made new discoveries and shared them with colleagues" }, scores: { So: 1, Ex: 1 } }
+    ]
+  },
+  // [축 4: 전달] Archive(A) vs Interaction(I) - Q10~Q12
+  {
+    id: 10,
+    text: { ko: "클럽 활동에서 인사이트를 얻었을 때 나는?", en: "When you gain insights from club activities, you..." },
+    options: [
+      { text: { ko: "✍️ 위키나 블로그에 기록해서 나중에 보기좋게 남겨요", en: "✍️ Record it on wiki or blog for future reference" }, scores: { A: 2 } },
+      { text: { ko: "🗣️ 슬랙에 공유하거나 대화로 나누며 즉각 소통해요", en: "🗣️ Share on Slack or communicate through conversation immediately" }, scores: { I: 2 } },
+      { text: { ko: "📑 나만 알기 아까운 내용을 요약해서 주위에 공유해요", en: "📑 Summarize and share content too good to keep to myself" }, scores: { A: 1, I: 1 } }
+    ]
+  },
+  {
+    id: 11,
+    text: { ko: "동료가 내가 잘 아는 분야에 대해 도움을 요청한다면?", en: "If a colleague asks for help in your area of expertise?" },
+    options: [
+      { text: { ko: "📄 미리 정리해 둔 가이드 문서나 링크를 먼저 보내줘요", en: "📄 Send pre-organized guide documents or links first" }, scores: { A: 2 } },
+      { text: { ko: "☕ 커피 한 잔하며 대화나 직접 화면 공유로 알려줘요", en: "☕ Explain over coffee through conversation or screen sharing" }, scores: { I: 2 } },
+      { text: { ko: "💬 먼저 말로 설명해주고, 추가 자료로 보충해요", en: "💬 Explain verbally first, then supplement with materials" }, scores: { A: 1, I: 1 } }
+    ]
+  },
+  {
+    id: 12,
+    text: { ko: "나에게 더 익숙한 지식 공유의 방식은?", en: "What knowledge sharing method is more familiar to you?" },
+    options: [
+      { text: { ko: "🗂️ 흩어진 정보를 큐레이션해서 기록물로 남기는 것", en: "🗂️ Curating scattered information and leaving it as records" }, scores: { A: 2 } },
+      { text: { ko: "🎤 발표나 토론을 통해 실시간으로 의견을 나누는 것", en: "🎤 Sharing opinions in real-time through presentations or discussions" }, scores: { I: 2 } },
+      { text: { ko: "📝 대화에서 인사이트를 뽑아 정리하고 다시 공유하는 것", en: "📝 Extracting insights from conversations, organizing, and resharing" }, scores: { A: 1, I: 1 } }
+    ]
+  }
+];
+// ============ 16개 유형 데이터 Part 1 ============
+const types = {
+  "TS-So-A": {
+    emoji: "🏗️",
+    name: { ko: "빌드 마스터", en: "Build Master" },
+    nameEn: "Build Master",
+    subtitle: { ko: "구조를 설계하고 문서로 남기는 사람", en: "Person who designs structures and documents them" },
+    description: {
+      ko: "기술의 본질을 꿰뚫어 체계적인 구조를 설계하고 기록으로 남깁니다. 'AI자동화클럽' 워크플로우 설계 등에 능합니다.",
+      en: "You penetrate the essence of technology, design systematic structures, and leave them as records."
+    },
+    quote: { ko: "\"좋은 설계는 팀의 미래를 바꾼다.\"", en: "\"Good design changes the team's future.\"" },
+    strengths: { ko: ["체계적인 설계 능력", "꼼꼼한 문서화", "기술적 통찰력", "지식의 자산화"], en: ["Systematic design ability", "Thorough documentation", "Technical insight", "Knowledge asset building"] },
+    weakness: { ko: "완벽주의로 인한 실행 지연 가능성", en: "Potential execution delay due to perfectionism." },
+    growth: { ko: "작은 프로토타입부터 빠르게 만들기 연습", en: "Practice making small prototypes quickly." },
+    bestMatch1: { code: "PE-So-I", name: { ko: "에너지 부스터", en: "Energy Booster" }, reason: { ko: "완벽한 설계를 추구하다 실행이 늦어지는 당신에게, 에너지 부스터의 '일단 해보자!' 추진력이 80%에서 시작하는 용기를 줍니다.", en: "Energy Booster's 'Let's just do it!' drive gives you courage to start at 80%." } },
+    bestMatch2: { code: "TE-So-A", name: { ko: "아이디어 맥가이버", en: "Idea MacGyver" }, reason: { ko: "둘 다 체계적 문서화를 중시해요. 당신이 설계하고 아이디어 맥가이버가 구현하면, 설계도가 실제 시스템이 됩니다.", en: "Both value systematic documentation. Your designs become real systems." } },
+    clubFit: { ko: ["AI업무자동화", "빌드랩", "언리얼스터디"], en: ["AI Automation", "BuildLab", "Unreal Study"] },
+    keywords: { ko: ["설계력", "문서화", "시스템씽킹", "기술자산화"], en: ["Design", "Documentation", "System Thinking", "Tech Assets"] },
+    imageUrl: "https://res09.bignox.com/appcenter/kr/2019/12/크기변환마인크래프트-배경-그림-mng.png"
+  },
+  "TS-So-I": {
+    emoji: "⚡",
+    name: { ko: "프로세스 전도사", en: "Process Evangelist" },
+    nameEn: "Process Evangelist",
+    subtitle: { ko: "구조를 짜서 팀에 전파하는 사람", en: "Person who creates structures and spreads them to the team" },
+    description: {
+      ko: "효율적인 시스템을 설계하고 팀 전체에 전파하며 보람을 느낍니다. 동료들에게 프로세스를 가르쳐주는 역할을 즐깁니다.",
+      en: "You find fulfillment in designing efficient systems and spreading them to the entire team."
+    },
+    quote: { ko: "\"한 사람의 효율이 팀 전체를 바꾼다.\"", en: "\"One person's efficiency changes the whole team.\"" },
+    strengths: { ko: ["시스템 설계 능력", "명확한 가이드 제공", "팀 생산성 향상", "지식 전파력"], en: ["System design ability", "Clear guidance", "Team productivity improvement", "Knowledge spreading"] },
+    weakness: { ko: "효율성 강요 주의", en: "Be careful not to force efficiency on others." },
+    growth: { ko: "다른 사람의 방식 경청하기", en: "Listen to other people's methods." },
+    bestMatch1: { code: "PE-Ex-A", name: { ko: "전설의 이야기꾼", en: "Legendary Storyteller" }, reason: { ko: "모두가 효율을 중시하진 않아요. 이야기꾼이 당신의 시스템을 매력적인 이야기로 포장하면, 자연스럽게 전파됩니다.", en: "Storyteller wraps your system in compelling narratives for natural spread." } },
+    bestMatch2: { code: "PS-So-I", name: { ko: "피드백 요정", en: "Feedback Fairy" }, reason: { ko: "가르치는 것뿐 아니라 듣는 것도 중요해요. 피드백 요정과 함께하면 전파하면서 동시에 피드백도 받을 수 있어요.", en: "Listening is as important as teaching. With Feedback Fairy, spread while receiving feedback." } },
+    clubFit: { ko: ["AI업무자동화", "월요일이좋아", "GPT야놀자"], en: ["AI Automation", "Love Monday", "GPT Let's Play"] },
+    keywords: { ko: ["효율화", "시스템전파", "팀생산성", "가이드"], en: ["Efficiency", "System Spread", "Team Productivity", "Guide"] },
+    imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4-u60T1hkip1Wu0WHOmNB5x6fMiuKfc9QWA&s"
+  },
+  "TS-Ex-A": {
+    emoji: "🔬",
+    name: { ko: "기술 고고학자", en: "Tech Archaeologist" },
+    nameEn: "Tech Archaeologist",
+    subtitle: { ko: "기술 원리를 파고들어 기록하는 사람", en: "Person who digs into tech principles and records them" },
+    description: {
+      ko: "기술 원리를 깊이 분석하고 체계적으로 기록합니다. 프롬프트 원리 연구나 엔진 구조 분석에 탁월합니다.",
+      en: "You deeply analyze and systematically record technical principles."
+    },
+    quote: { ko: "\"원리를 알면 응용은 무한하다.\"", en: "\"Understanding principles makes application infinite.\"" },
+    strengths: { ko: ["깊이 있는 분석력", "체계적 아카이빙", "기술적 호기심", "지식 축적"], en: ["Deep analysis", "Systematic archiving", "Technical curiosity", "Knowledge accumulation"] },
+    weakness: { ko: "세부 사항에 매몰되어 전체를 놓칠 우려", en: "Risk of getting lost in details and missing the big picture." },
+    growth: { ko: "분석 내용에 대해 타인과 토론하기", en: "Discuss your analysis with others." },
+    bestMatch1: { code: "PE-So-I", name: { ko: "에너지 부스터", en: "Energy Booster" }, reason: { ko: "너무 깊이 파다 보면 혼자가 되기 쉬워요. 에너지 부스터의 응원이 당신의 탐구에 활력을 불어넣어 줍니다.", en: "Energy Booster's support breathes vitality into your exploration." } },
+    bestMatch2: { code: "TE-Ex-A", name: { ko: "찐 테크 덕후", en: "True Tech Geek" }, reason: { ko: "둘 다 순수한 호기심으로 기술을 파고들어요. 함께 덕질하면 서로의 발견을 나누며 더 깊이 갈 수 있어요.", en: "Both dig into tech with pure curiosity. Geeking out together lets you go deeper." } },
+    clubFit: { ko: ["GPT야놀자", "언리얼스터디", "보드게임메커니즘"], en: ["GPT Let's Play", "Unreal Study", "Board Game Mechanisms"] },
+    keywords: { ko: ["분석력", "원리탐구", "아카이빙", "기술연구"], en: ["Analysis", "Principle Exploration", "Archiving", "Tech Research"] },
+    imageUrl: "https://i2.ruliweb.com/img/22/03/27/17fc6d3fb2c55a349.jpg"
+  },
+  "TS-Ex-I": {
+    emoji: "🎯",
+    name: { ko: "난공불락 논리왕", en: "Invincible Logic King" },
+    nameEn: "Invincible Logic King",
+    subtitle: { ko: "분석한 걸로 토론하고 설득하는 사람", en: "Person who debates and persuades with analysis" },
+    description: {
+      ko: "기술적 분석 기반의 논리적 토론을 이끕니다. 게임 메커니즘 분석이나 기술 선택의 근거를 논리적으로 설명합니다.",
+      en: "You lead logical discussions based on technical analysis."
+    },
+    quote: { ko: "\"좋은 결정은 좋은 분석에서 나온다.\"", en: "\"Good decisions come from good analysis.\"" },
+    strengths: { ko: ["논리적 분석", "설득력 있는 커뮤니케이션", "근거 기반 토론", "의사결정 지원"], en: ["Logical analysis", "Persuasive communication", "Evidence-based debate", "Decision support"] },
+    weakness: { ko: "감성적 공감 부족 가능성", en: "Potential lack of emotional empathy." },
+    growth: { ko: "상대방의 감정과 맥락 고려하기", en: "Consider others' emotions and context." },
+    bestMatch1: { code: "PS-Ex-I", name: { ko: "컬쳐 에반겔리스트", en: "Culture Evangelist" }, reason: { ko: "논리만으로는 설득이 안 될 때가 있어요. 컬쳐 에반겔리스트가 당신의 논리에 공감을 더하면, 모두가 이해합니다.", en: "Culture Evangelist adds empathy to your logic so everyone understands." } },
+    bestMatch2: { code: "TE-Ex-I", name: { ko: "MVP 반복 장인", en: "MVP Iteration Master" }, reason: { ko: "분석과 실험의 빠른 사이클! 당신이 분석하고 MVP 장인이 바로 만들어보면, 가설 검증이 빨라져요.", en: "Fast cycle of analysis and experimentation speeds up hypothesis validation." } },
+    clubFit: { ko: ["게임의재미", "보드게임메커니즘", "빌드랩"], en: ["Game Fun", "Board Game Mechanisms", "BuildLab"] },
+    keywords: { ko: ["논리력", "토론", "분석기반설득", "의사결정"], en: ["Logic", "Debate", "Analysis-based Persuasion", "Decision Making"] },
+    imageUrl: "https://www.incheonilbo.com/news/photo/201010/398547_10155_4140.jpg"
+  },
+  "TE-So-A": {
+    emoji: "🤖",
+    name: { ko: "아이디어 맥가이버", en: "Idea MacGyver" },
+    nameEn: "Idea MacGyver",
+    subtitle: { ko: "일단 만들고 결과물을 남기는 사람", en: "Person who builds first and leaves results" },
+    description: {
+      ko: "아이디어를 즉시 구현하고 체계적으로 남깁니다. 슬랙봇, 자동화 스크립트를 '일단 돌아가게' 만드는 진정한 실행가입니다.",
+      en: "You immediately implement ideas and systematically document them. A true executor who makes things 'just work'."
+    },
+    quote: { ko: "\"생각보다 손이 먼저 움직인다.\"", en: "\"My hands move before my thoughts.\"" },
+    strengths: { ko: ["빠른 실행력", "실용적 결과물", "문제 해결 능력", "결과물 문서화"], en: ["Fast execution", "Practical results", "Problem solving", "Result documentation"] },
+    weakness: { ko: "구조 복잡화 가능성", en: "Potential for over-complexity." },
+    growth: { ko: "제작 전 5분간 설계 투자하기", en: "Invest 5 minutes in design before building." },
+    bestMatch1: { code: "PS-So-A", name: { ko: "룰 메이킹 마스터", en: "Rule Making Master" }, reason: { ko: "빨리 만들다 보면 구조가 복잡해지죠. 룰 메이킹 마스터의 운영 노하우가 더해지면, 당신의 자동화가 팀 문화로 정착됩니다.", en: "Rule Making Master's operational know-how helps your automation become team culture." } },
+    bestMatch2: { code: "TS-So-A", name: { ko: "빌드 마스터", en: "Build Master" }, reason: { ko: "만들기 전 5분 설계가 필요할 때, 빌드 마스터가 구조를 잡아주면 더 단단한 결과물이 나와요.", en: "Build Master's structure creates more solid results." } },
+    clubFit: { ko: ["AI업무자동화", "빌드랩", "GPT야놀자"], en: ["AI Automation", "BuildLab", "GPT Let's Play"] },
+    keywords: { ko: ["실행력", "자동화", "결과물", "문제해결"], en: ["Execution", "Automation", "Results", "Problem Solving"] },
+    imageUrl: "https://i.namu.wiki/i/41ZCzJ33aNzkenPIAhmNzw2CeVe8VlzKzSFYPMrihNwyDLhBqDMTZhNOoNc_WHfdtY9CBJjy02wNx-d7tI_Ztw.webp"
+  },
+  "TE-So-I": {
+    emoji: "🧭",
+    name: { ko: "신기술 전파자", en: "New Tech Spreader" },
+    nameEn: "New Tech Spreader",
+    subtitle: { ko: "새 도구를 써보고 바로 공유하는 사람", en: "Person who tries new tools and shares immediately" },
+    description: {
+      ko: "신규 도구의 첫 테스터로서 노하우를 동료들에게 실시간으로 전파합니다. 트렌드를 선도하는 역할에 능합니다.",
+      en: "As the first tester of new tools, you share know-how with colleagues in real-time."
+    },
+    quote: { ko: "\"새로운 도구는 새로운 가능성이다.\"", en: "\"New tools mean new possibilities.\"" },
+    strengths: { ko: ["빠른 적응력", "실시간 지식 공유", "도구 활용 능력", "트렌드 선도"], en: ["Quick adaptation", "Real-time knowledge sharing", "Tool utilization", "Trend leading"] },
+    weakness: { ko: "도구 탐색의 넓이 대비 깊이 부족", en: "Breadth over depth in tool exploration." },
+    growth: { ko: "하나의 도구 마스터해보기", en: "Try mastering one tool deeply." },
+    bestMatch1: { code: "PS-Ex-I", name: { ko: "컬쳐 에반겔리스트", en: "Culture Evangelist" }, reason: { ko: "새 도구를 발견해도 팀이 안 쓰면 소용없어요. 컬쳐 에반겔리스트가 팀 언어로 바꿔주면 도입이 쉬워집니다.", en: "Culture Evangelist makes introduction easier by translating to team language." } },
+    bestMatch2: { code: "TE-Ex-I", name: { ko: "MVP 반복 장인", en: "MVP Iteration Master" }, reason: { ko: "넓이와 깊이의 균형! 당신이 도구를 발견하고 MVP 장인이 빠르게 실험하면 최고의 조합이에요.", en: "Balance of breadth and depth! Best combination." } },
+    clubFit: { ko: ["AI업무자동화", "GPT야놀자", "치지직클럽"], en: ["AI Automation", "GPT Let's Play", "Chzzk Club"] },
+    keywords: { ko: ["적응력", "도구탐색", "지식공유", "트렌드"], en: ["Adaptability", "Tool Exploration", "Knowledge Sharing", "Trends"] },
+    imageUrl: "https://img2.quasarzone.com/editor/2024/02/10/dad2f815a8e7c1ddeef8345a7fe8b0c9.jpg"
+  },
+  "TE-Ex-A": {
+    emoji: "🔥",
+    name: { ko: "찐 테크 덕후", en: "True Tech Geek" },
+    nameEn: "True Tech Geek",
+    subtitle: { ko: "좋아서 파고들고 기록하는 사람", en: "Person who digs in because they love it and records" },
+    description: {
+      ko: "순수한 호기심으로 기술을 파고들며 과정을 기록합니다. 엔진의 숨겨진 기능을 발굴하는 등 팀의 깊이를 만듭니다.",
+      en: "You dig into technology with pure curiosity and record the process."
+    },
+    quote: { ko: "\"좋아하는 일에 이유가 필요한가요?\"", en: "\"Do you need a reason for what you love?\"" },
+    strengths: { ko: ["순수한 탐구심", "깊이 있는 전문성", "꼼꼼한 기록", "열정적 몰입"], en: ["Pure curiosity", "Deep expertise", "Thorough recording", "Passionate immersion"] },
+    weakness: { ko: "실용성 간과 가능성", en: "Possible neglect of practicality." },
+    growth: { ko: "덕질 내용을 팀에 적극 공유하기", en: "Actively share your geeking out with the team." },
+    bestMatch1: { code: "PE-Ex-A", name: { ko: "전설의 이야기꾼", en: "Legendary Storyteller" }, reason: { ko: "덕질에 빠지면 실용성을 놓치기 쉬워요. 이야기꾼이 당신의 탐구를 매력적인 콘텐츠로 바꿔주면, 덕질이 가치가 됩니다.", en: "Storyteller turns your exploration into compelling content." } },
+    bestMatch2: { code: "TS-Ex-A", name: { ko: "기술 고고학자", en: "Tech Archaeologist" }, reason: { ko: "둘 다 기술의 원리를 파고드는 걸 좋아해요. 함께하면 서로의 발견을 체계적으로 기록하며 지식을 쌓아갈 수 있어요.", en: "Both love digging into tech principles. Together you can build knowledge." } },
+    clubFit: { ko: ["언리얼스터디", "보드게임메커니즘", "폰덕겜톡"], en: ["Unreal Study", "Board Game Mechanisms", "Mobile Game Talk"] },
+    keywords: { ko: ["덕질", "탐구심", "전문성", "기록"], en: ["Geeking", "Curiosity", "Expertise", "Recording"] },
+    imageUrl: "https://file2.nocutnews.co.kr/newsroom/image/2012/09/06102628375_69990010.jpg"
+  },
+  "TE-Ex-I": {
+    emoji: "🚀",
+    name: { ko: "MVP 반복 장인", en: "MVP Iteration Master" },
+    nameEn: "MVP Iteration Master",
+    subtitle: { ko: "빠르게 만들어서 반응을 보는 사람", en: "Person who builds fast and watches reactions" },
+    description: {
+      ko: "완벽함보다 속도를 우선시하여 MVP를 만들고 피드백을 통해 발전시킵니다. 팀에 민첩함을 불어넣습니다.",
+      en: "You prioritize speed over perfection, building MVPs and improving through feedback."
+    },
+    quote: { ko: "\"완벽한 계획보다 빠른 실행이 낫다.\"", en: "\"Fast execution beats perfect planning.\"" },
+    strengths: { ko: ["민첩한 실행력", "피드백 수용력", "빠른 반복", "실험 정신"], en: ["Agile execution", "Feedback acceptance", "Fast iteration", "Experimental spirit"] },
+    weakness: { ko: "완성도 부족 우려", en: "Concern about lack of completion." },
+    growth: { ko: "시작만큼 완성의 기쁨 경험하기", en: "Experience the joy of completion as much as starting." },
+    bestMatch1: { code: "PS-So-I", name: { ko: "피드백 요정", en: "Feedback Fairy" }, reason: { ko: "빠른 만큼 완성도가 낮을 수 있어요. 피드백 요정의 섬세한 피드백이 당신의 프로토타입을 다음 단계로 끌어올립니다.", en: "Feedback Fairy's detailed feedback elevates your prototypes." } },
+    bestMatch2: { code: "TE-So-I", name: { ko: "신기술 전파자", en: "New Tech Spreader" }, reason: { ko: "신기술 전파자가 발견한 새 도구로 당신이 빠르게 프로토타입을 만들면, 실험 속도가 2배가 돼요.", en: "With New Tech Spreader's tools, experimentation speed doubles." } },
+    clubFit: { ko: ["빌드랩", "AI업무자동화", "GPT야놀자"], en: ["BuildLab", "AI Automation", "GPT Let's Play"] },
+    keywords: { ko: ["민첩성", "프로토타입", "피드백", "실험"], en: ["Agility", "Prototype", "Feedback", "Experiment"] },
+    imageUrl: "https://i2.ruliweb.com/img/25/04/30/19684222717484f84.jpg"
+  }
+};
+// ============ 16개 유형 데이터 Part 2 ============
+Object.assign(types, {
+  "PS-So-A": {
+    emoji: "🏛️",
+    name: { ko: "룰 메이킹 마스터", en: "Rule Making Master" },
+    nameEn: "Rule Making Master",
+    subtitle: { ko: "팀 운영 룰을 만들고 기록하는 사람", en: "Person who creates team operation rules and records them" },
+    description: {
+      ko: "팀 문화와 운영 룰을 설계하고 가이드라인을 문서화합니다. 지속 가능한 문화의 기반을 다지는 역할을 합니다.",
+      en: "You design team culture and operation rules, documenting guidelines."
+    },
+    quote: { ko: "\"좋은 문화는 설계되는 것이다.\"", en: "\"Good culture is designed.\"" },
+    strengths: { ko: ["운영 설계 능력", "신뢰 구축", "체계적 문서화", "지속 가능한 문화 조성"], en: ["Operation design ability", "Trust building", "Systematic documentation", "Sustainable culture creation"] },
+    weakness: { ko: "규칙 과잉으로 인한 경직 우려", en: "Concern about rigidity from excessive rules." },
+    growth: { ko: "즉흥적인 재미와 순간 허용하기", en: "Allow for spontaneous fun and moments." },
+    bestMatch1: { code: "TE-So-A", name: { ko: "아이디어 맥가이버", en: "Idea MacGyver" }, reason: { ko: "규칙이 너무 많으면 숨이 막혀요. 아이디어 맥가이버가 반복 업무를 시스템화하면, 규칙은 줄이고 문화는 유지할 수 있어요.", en: "Idea MacGyver systematizes work, reducing rules while maintaining culture." } },
+    bestMatch2: { code: "PS-So-I", name: { ko: "피드백 요정", en: "Feedback Fairy" }, reason: { ko: "문화를 설계하고 피드백 요정이 구성원들의 반응을 수집하면, 지속 가능한 문화가 만들어져요.", en: "Feedback Fairy collects responses to create sustainable culture." } },
+    clubFit: { ko: ["월요일이좋아", "기숙사라운지", "실패클럽"], en: ["Love Monday", "Dormitory Lounge", "Failure Club"] },
+    keywords: { ko: ["문화설계", "운영규칙", "신뢰구축", "커뮤니티"], en: ["Culture Design", "Operation Rules", "Trust Building", "Community"] },
+    imageUrl: "https://3.gall-img.com/tdgall/files/attach/images/82/675/400/114/b7a1bca107854ef1bf029b7885ff228c.jpg"
+  },
+  "PS-So-I": {
+    emoji: "🎯",
+    name: { ko: "피드백 요정", en: "Feedback Fairy" },
+    nameEn: "Feedback Fairy",
+    subtitle: { ko: "분석해서 피드백을 전달하는 사람", en: "Person who analyzes and delivers feedback" },
+    description: {
+      ko: "상황을 분석하고 건설적인 피드백으로 동료의 성장을 돕습니다. 회고를 이끌거나 심리적 안전감을 조성합니다.",
+      en: "You analyze situations and help colleagues grow with constructive feedback."
+    },
+    quote: { ko: "\"좋은 피드백은 거울이 되어준다.\"", en: "\"Good feedback becomes a mirror.\"" },
+    strengths: { ko: ["조율 능력", "심리적 안전 조성", "건설적 피드백", "성장 지원"], en: ["Coordination ability", "Psychological safety creation", "Constructive feedback", "Growth support"] },
+    weakness: { ko: "피드백 수용보다 전달에 치중 우려", en: "Concern about focusing on giving rather than receiving." },
+    growth: { ko: "분석 없는 무조건적 응원 해보기", en: "Try unconditional support without analysis." },
+    bestMatch1: { code: "TE-Ex-I", name: { ko: "MVP 반복 장인", en: "MVP Iteration Master" }, reason: { ko: "피드백을 주는 것에 집중하다 받는 걸 놓치기 쉬워요. MVP 장인의 빠른 시도를 코칭하면서 당신도 성장해요.", en: "Coaching MVP Master's fast attempts helps you grow too." } },
+    bestMatch2: { code: "PS-So-A", name: { ko: "룰 메이킹 마스터", en: "Rule Making Master" }, reason: { ko: "피드백이 문화가 되려면 구조가 필요해요. 룰 메이킹 마스터와 함께하면 피드백 문화를 팀에 정착시킬 수 있어요.", en: "With Rule Making Master, establish feedback culture in the team." } },
+    clubFit: { ko: ["실패클럽", "글쓰기습관", "월요일이좋아"], en: ["Failure Club", "Writing Habits", "Love Monday"] },
+    keywords: { ko: ["피드백", "성장지원", "조율", "심리적안전"], en: ["Feedback", "Growth Support", "Coordination", "Psychological Safety"] },
+    imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTYq0jlszcSGiwy5cpWg_kowFG-sSR5KCSJgw&s"
+  },
+  "PS-Ex-A": {
+    emoji: "📝",
+    name: { ko: "인사이트 큐레이터", en: "Insight Curator" },
+    nameEn: "Insight Curator",
+    subtitle: { ko: "대화에서 발견한 걸 글로 정리하는 사람", en: "Person who organizes discoveries from conversations into writing" },
+    description: {
+      ko: "대화 속 인사이트를 발견해 체계적으로 정리합니다. 토론이나 일상의 핵심을 기록하여 지식화합니다.",
+      en: "You discover insights in conversations and systematically organize them."
+    },
+    quote: { ko: "\"기록되지 않은 것은 사라진다.\"", en: "\"What is not recorded disappears.\"" },
+    strengths: { ko: ["관찰력", "성찰 능력", "체계적 기록", "인사이트 발굴"], en: ["Observation", "Reflection ability", "Systematic recording", "Insight discovery"] },
+    weakness: { ko: "기록 집중으로 인한 흐름 이탈 우려", en: "Concern about missing flow due to focus on recording." },
+    growth: { ko: "기록한 내용을 더 넓게 공유하기", en: "Share your records more widely." },
+    bestMatch1: { code: "PE-So-I", name: { ko: "에너지 부스터", en: "Energy Booster" }, reason: { ko: "기록에 집중하다 대화 흐름을 놓칠 수 있어요. 에너지 부스터가 대화에 활력을 불어넣는 동안 당신은 인사이트를 포착하세요.", en: "While Energy Booster energizes the conversation, you capture insights." } },
+    bestMatch2: { code: "TS-So-I", name: { ko: "프로세스 전도사", en: "Process Evangelist" }, reason: { ko: "기록한 인사이트를 더 많이 공유하세요. 프로세스 전도사의 시스템을 당신이 기록하면, 지식이 조직에 축적됩니다.", en: "Recording Process Evangelist's systems accumulates organizational knowledge." } },
+    clubFit: { ko: ["독서모임", "기숙사라운지", "글쓰기습관"], en: ["Book Club", "Dormitory Lounge", "Writing Habits"] },
+    keywords: { ko: ["관찰력", "기록", "인사이트", "성찰"], en: ["Observation", "Recording", "Insight", "Reflection"] },
+    imageUrl: "https://i.namu.wiki/i/CJZL6nvVtASzgEmpBM0NHTrJ2rZ_4DSE6L-iDDZbBdi0KfArKLXossqTYBjle-O_8pgBwyg_zzc75_x7jJnvDg.webp"
+  },
+  "PS-Ex-I": {
+    emoji: "🌉",
+    name: { ko: "컬쳐 에반겔리스트", en: "Culture Evangelist" },
+    nameEn: "Culture Evangelist",
+    subtitle: { ko: "무형의 가치를 언어화해서 전파하는 사람", en: "Person who verbalizes intangible values and spreads them" },
+    description: {
+      ko: "팀의 가치와 분위기를 언어로 표현하고 해석합니다. 우리 클럽의 가치를 타인에게 공감시키는 문화의 통역사입니다.",
+      en: "You express and interpret team values and atmosphere in language."
+    },
+    quote: { ko: "\"문화는 말로 전해지고 행동으로 완성된다.\"", en: "\"Culture is conveyed through words and completed through action.\"" },
+    strengths: { ko: ["가치 전달력", "소통 능력", "문화 해석", "공감 형성"], en: ["Value delivery", "Communication ability", "Culture interpretation", "Empathy building"] },
+    weakness: { ko: "언어화에 대한 의존도", en: "Dependence on verbalization." },
+    growth: { ko: "글로 표현하는 역량 병행하기", en: "Develop writing skills alongside verbal." },
+    bestMatch1: { code: "TS-Ex-I", name: { ko: "난공불락 논리왕", en: "Invincible Logic King" }, reason: { ko: "말로 표현하기 어려운 것도 있어요. 논리왕의 논리적 분석을 당신이 공감 가는 언어로 번역하면 완벽해요.", en: "Translating Logic King's analysis into empathetic language is perfect." } },
+    bestMatch2: { code: "PE-Ex-I", name: { ko: "흥 메이커", en: "Vibe Maker" }, reason: { ko: "글로도 표현해보세요. 흥 메이커가 만든 분위기를 당신이 언어화하면, 순간의 재미가 문화로 남아요.", en: "When you verbalize Vibe Maker's atmosphere, fun moments become culture." } },
+    clubFit: { ko: ["월요일이좋아", "조선e스포츠북", "기숙사라운지"], en: ["Love Monday", "Joseon eSports Book", "Dormitory Lounge"] },
+    keywords: { ko: ["문화번역", "가치전달", "소통", "공감"], en: ["Culture Translation", "Value Delivery", "Communication", "Empathy"] },
+    imageUrl: "https://i.pinimg.com/736x/3a/c4/85/3ac485c416b8516e2934e86c6ec7ff4d.jpg"
+  },
+  "PE-So-A": {
+    emoji: "🕸️",
+    name: { ko: "네트워크 빌더", en: "Network Builder" },
+    nameEn: "Network Builder",
+    subtitle: { ko: "모임을 열고 관계를 자산화하는 사람", en: "Person who hosts gatherings and turns relationships into assets" },
+    description: {
+      ko: "적극적으로 모임을 기획하고 인적 연결을 체계적으로 관리합니다. 조직 내 관계망을 확장하는 역할을 주도합니다.",
+      en: "You actively plan gatherings and systematically manage connections."
+    },
+    quote: { ko: "\"연결이 가치를 만든다.\"", en: "\"Connections create value.\"" },
+    strengths: { ko: ["추진력", "관계 자산화", "네트워킹 능력", "연결 창출"], en: ["Drive", "Relationship asset building", "Networking ability", "Connection creation"] },
+    weakness: { ko: "관계의 양 대비 깊이 부족 우려", en: "Concern about depth vs. quantity of relationships." },
+    growth: { ko: "기존 관계의 깊이 더해보기", en: "Deepen existing relationships." },
+    bestMatch1: { code: "PS-Ex-A", name: { ko: "인사이트 큐레이터", en: "Insight Curator" }, reason: { ko: "관계의 양에 집중하다 깊이를 놓칠 수 있어요. 인사이트 큐레이터가 연결의 의미를 정리하면, 네트워크가 지식 자산이 됩니다.", en: "Insight Curator organizes meaning of connections into knowledge assets." } },
+    bestMatch2: { code: "PE-So-I", name: { ko: "에너지 부스터", en: "Energy Booster" }, reason: { ko: "기존 관계를 깊게 하는 것도 중요해요. 에너지 부스터와 함께하면 새로운 연결에도, 기존 관계에도 활력이 넘쳐요.", en: "Energy Booster brings vitality to both new and existing connections." } },
+    clubFit: { ko: ["기숙사라운지", "월요일이좋아", "조선e스포츠북"], en: ["Dormitory Lounge", "Love Monday", "Joseon eSports Book"] },
+    keywords: { ko: ["네트워킹", "관계자산", "추진력", "연결"], en: ["Networking", "Relationship Assets", "Drive", "Connection"] },
+    imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4r5yp7TABRU0auaWtvxdf_IiJVgaA0MATFw&s"
+  },
+  "PE-So-I": {
+    emoji: "⚡",
+    name: { ko: "에너지 부스터", en: "Energy Booster" },
+    nameEn: "Energy Booster",
+    subtitle: { ko: "즉각 응원하고 동기부여하는 사람", en: "Person who immediately cheers and motivates" },
+    description: {
+      ko: "팀원들에게 긍정 에너지를 전파하고 실시간 격려로 동기를 부여합니다. 팀의 활력을 높이는 힐러 같은 존재입니다.",
+      en: "You spread positive energy to team members and motivate through real-time encouragement."
+    },
+    quote: { ko: "\"당신의 응원이 누군가의 시작이 된다.\"", en: "\"Your support becomes someone's beginning.\"" },
+    strengths: { ko: ["공감 능력", "동기부여", "긍정 에너지", "즉각적 응원"], en: ["Empathy", "Motivation", "Positive energy", "Immediate support"] },
+    weakness: { ko: "항상 밝아야 한다는 강박으로 인한 소진", en: "Burnout from pressure to always be bright." },
+    growth: { ko: "조용히 함께해주는 응원 시도", en: "Try quiet, supportive encouragement." },
+    bestMatch1: { code: "TS-So-A", name: { ko: "빌드 마스터", en: "Build Master" }, reason: { ko: "항상 긍정적이려면 지쳐요. 빌드 마스터의 체계적인 계획에 당신의 에너지가 더해지면, 서로 힘을 나눌 수 있어요.", en: "Build Master's systematic plans let you share energy with each other." } },
+    bestMatch2: { code: "PE-So-A", name: { ko: "네트워크 빌더", en: "Network Builder" }, reason: { ko: "다양한 응원 방식을 시도해보세요. 네트워크 빌더와 함께하면 더 많은 사람에게 에너지를 전파할 수 있어요.", en: "With Network Builder, spread energy to more people." } },
+    clubFit: { ko: ["실패클럽", "글쓰기습관", "월요일이좋아"], en: ["Failure Club", "Writing Habits", "Love Monday"] },
+    keywords: { ko: ["에너지", "동기부여", "응원", "긍정"], en: ["Energy", "Motivation", "Support", "Positivity"] },
+    imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRKyVhJRkcMiPzu3XOU2X7SMlrsWoSQnlrCSw&s"
+  },
+  "PE-Ex-A": {
+    emoji: "📖",
+    name: { ko: "전설의 이야기꾼", en: "Legendary Storyteller" },
+    nameEn: "Legendary Storyteller",
+    subtitle: { ko: "에피소드를 콘텐츠로 만드는 사람", en: "Person who turns episodes into content" },
+    description: {
+      ko: "사람들과의 경험을 매력적인 이야기로 풀어냅니다. 토론이나 활동 내용을 누구나 읽고 싶게 큐레이션합니다.",
+      en: "You turn experiences with people into compelling stories."
+    },
+    quote: { ko: "\"좋은 이야기는 사람을 움직인다.\"", en: "\"Good stories move people.\"" },
+    strengths: { ko: ["표현력", "큐레이션 능력", "콘텐츠 제작", "스토리텔링"], en: ["Expression", "Curation ability", "Content creation", "Storytelling"] },
+    weakness: { ko: "이야기 구성 대비 실행 부족 우려", en: "Concern about lack of execution vs. story composition." },
+    growth: { ko: "타인의 이야기에 경청하여 영감 얻기", en: "Get inspiration by listening to others' stories." },
+    bestMatch1: { code: "TE-Ex-A", name: { ko: "찐 테크 덕후", en: "True Tech Geek" }, reason: { ko: "이야기에 집중하다 행동을 놓칠 수 있어요. 찐 테크 덕후의 깊은 탐구가 당신에게 풍부한 소재를 제공합니다.", en: "True Tech Geek's deep exploration provides you rich material." } },
+    bestMatch2: { code: "PS-Ex-A", name: { ko: "인사이트 큐레이터", en: "Insight Curator" }, reason: { ko: "다른 사람의 이야기도 들어보세요. 인사이트 큐레이터와 함께하면 서로의 기록이 더 풍성한 콘텐츠가 됩니다.", en: "With Insight Curator, each other's records become richer content." } },
+    clubFit: { ko: ["글쓰기습관", "조선e스포츠북", "독서모임"], en: ["Writing Habits", "Joseon eSports Book", "Book Club"] },
+    keywords: { ko: ["스토리텔링", "콘텐츠", "표현력", "큐레이션"], en: ["Storytelling", "Content", "Expression", "Curation"] },
+    imageUrl: "https://pbs.twimg.com/media/FUGAmT6aQAABzQS.jpg"
+  },
+  "PE-Ex-I": {
+    emoji: "🎉",
+    name: { ko: "흥 메이커", en: "Vibe Maker" },
+    nameEn: "Vibe Maker",
+    subtitle: { ko: "현장에서 재미를 만드는 사람", en: "Person who creates fun on the spot" },
+    description: {
+      ko: "즉흥적으로 분위기를 띄우고 현장의 재미를 극대화합니다. 정체된 분위기에 활기를 불어넣는 파티 주인공입니다.",
+      en: "You spontaneously liven up the atmosphere and maximize fun on the spot."
+    },
+    quote: { ko: "\"지금 이 순간을 즐기자!\"", en: "\"Let's enjoy this moment!\"" },
+    strengths: { ko: ["순발력", "친화력", "분위기 조성", "즉흥적 재미"], en: ["Quick wit", "Friendliness", "Atmosphere creation", "Spontaneous fun"] },
+    weakness: { ko: "분위기 주도에 대한 심리적 부담", en: "Psychological burden of leading the atmosphere." },
+    growth: { ko: "재미에 깊이 있는 의미 더해보기", en: "Add deeper meaning to the fun." },
+    bestMatch1: { code: "PS-So-A", name: { ko: "룰 메이킹 마스터", en: "Rule Making Master" }, reason: { ko: "항상 분위기를 책임지면 지쳐요. 룰 메이킹 마스터의 구조 안에서 자유롭게 움직이면, 지속 가능한 재미가 됩니다.", en: "Moving freely within Rule Making Master's structure creates sustainable fun." } },
+    bestMatch2: { code: "PS-Ex-I", name: { ko: "컬쳐 에반겔리스트", en: "Culture Evangelist" }, reason: { ko: "재미 뒤에 의미도 담아보세요. 컬쳐 에반겔리스트가 당신이 만든 순간의 의미를 언어화하면, 더 오래 기억에 남아요.", en: "Culture Evangelist verbalizes meaning of moments you create." } },
+    clubFit: { ko: ["폰덕겜톡", "기숙사라운지", "치지직클럽"], en: ["Mobile Game Talk", "Dormitory Lounge", "Chzzk Club"] },
+    keywords: { ko: ["순발력", "분위기", "재미", "친화력"], en: ["Quick Wit", "Atmosphere", "Fun", "Friendliness"] },
+    imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_e00a_nUx4ikNykRidEXefzw_4c4LnYOI0Q&s"
+  }
+});
+
+// ============ 히든 유형: 퍼펙트 밸런서 ============
+types["BALANCE"] = {
+  emoji: "🎭",
+  name: { ko: "퍼펙트 밸런서", en: "Perfect Balancer" },
+  nameEn: "Perfect Balancer",
+  subtitle: { ko: "모든 것의 중심에서 조율하는 사람", en: "Person who harmonizes from the center of everything" },
+  description: {
+    ko: "축하해요! 숨겨진 17번째 유형을 발견했습니다. 당신은 어느 한쪽에 치우치지 않고 상황에 따라 유연하게 대응하는 올라운더입니다. 기술과 사람, 구조와 실험, 해결과 탐구, 기록과 소통... 모든 영역을 넘나들며 팀의 균형을 맞춥니다.",
+    en: "Congratulations! You've discovered the hidden 17th type. You're an all-rounder who responds flexibly to situations without leaning to one side. Tech and People, Structure and Experiment, Solve and Explore, Archive and Interaction... You cross all domains and balance the team."
+  },
+  quote: { ko: "\"균형 잡힌 시선이 팀의 중심을 만든다.\"", en: "\"A balanced perspective creates the team's center.\"" },
+  strengths: { ko: ["상황 적응력", "다재다능함", "중립적 조율 능력", "폭넓은 이해력"], en: ["Situational adaptability", "Versatility", "Neutral coordination", "Broad understanding"] },
+  weakness: { ko: "뚜렷한 강점이 없어 보일 수 있음", en: "May appear to lack distinct strengths." },
+  growth: { ko: "한 분야에서 깊이를 더해보세요", en: "Try adding depth in one area." },
+  bestMatch1: { code: "ALL", name: { ko: "모든 유형", en: "All Types" }, reason: { ko: "당신은 누구와도 잘 맞아요! 어떤 유형의 동료와도 시너지를 낼 수 있는 희귀한 존재입니다.", en: "You match well with everyone! A rare being who can create synergy with any type of colleague." } },
+  bestMatch2: { code: "BALANCE", name: { ko: "퍼펙트 밸런서", en: "Perfect Balancer" }, reason: { ko: "같은 밸런서를 만난다면? 서로의 균형 감각을 인정하며 최고의 조율 듀오가 됩니다.", en: "If you meet another Balancer? You become the best coordination duo, respecting each other's sense of balance." } },
+  clubFit: { ko: ["어디든 환영!", "모든 클럽과 어울림"], en: ["Welcome anywhere!", "Fits with all clubs"] },
+  keywords: { ko: ["올라운더", "균형", "조율", "적응력"], en: ["All-rounder", "Balance", "Coordination", "Adaptability"] },
+  imageUrl: "https://i3.ruliweb.com/img/20/10/23/17555a0707b4c6a30.png"
+};
+
+// ============ 핵심 함수들 ============
+
+function setLang(lang) {
+  currentLang = lang;
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.includes(lang === 'ko' ? '한국어' : 'English'));
+  });
+  
+  // 현재 상태에 맞는 화면 다시 렌더링
+  if (currentQuestion === 0) {
+    showStart();
+  } else if (currentQuestion > questions.length) {
+    // 결과 화면이면 다시 계산
+    showResult();
+  } else {
+    showQuestion(currentQuestion);
+  }
+}
+
+function showStart() {
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="card">
+      <div class="start-icon">🎮</div>
+      <h2 class="start-title">${t('startTitle')}</h2>
+      <p class="start-subtitle">${t('startSubtitle')}</p>
+      
+      <div class="info-list">
+        <div class="info-item">
+          <span class="info-icon">📝</span>
+          <span>${t('questionCount')}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-icon">⏱️</span>
+          <span>${t('time')}</span>
+        </div>
+      </div>
+      
+      <button class="btn btn-primary" onclick="startTest()">${t('start')}</button>
+    </div>
+  `;
+}
+
+function startTest() {
+  currentQuestion = 1;
+  scores = { T: 0, P: 0, S: 0, E: 0, So: 0, Ex: 0, A: 0, I: 0 };
+  showQuestion(1);
+}
+
+function showQuestion(num) {
+  const q = questions[num - 1];
+  const progress = (num / questions.length) * 100;
+  
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="progress-container">
+      <div class="progress-text">
+        <span>${t('question')} ${num}/${questions.length}</span>
+        <span>${Math.round(progress)}%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${progress}%"></div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="question-number">${t('question')} ${num}</div>
+      <div class="question-text">${q.text[currentLang]}</div>
+      
+      <div class="options">
+        ${q.options.map((opt, i) => `
+          <div class="option" onclick="selectOption(${num}, ${i})">
+            <span class="option-letter">${String.fromCharCode(65 + i)}</span>
+            <span class="option-text">${opt.text[currentLang]}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function selectOption(qNum, optIndex) {
+  const q = questions[qNum - 1];
+  const opt = q.options[optIndex];
+  
+  // 점수 추가
+  Object.entries(opt.scores).forEach(([key, value]) => {
+    scores[key] += value;
+  });
+  
+  if (qNum < questions.length) {
+    currentQuestion = qNum + 1;
+    showQuestion(currentQuestion);
+  } else {
+    showLoading();
+  }
+}
+
+function showLoading() {
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="card">
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        <p>${t('loading')}</p>
+      </div>
+    </div>
+  `;
+  
+  setTimeout(() => {
+    currentQuestion = questions.length + 1;
+    showNameInput();
+  }, 1500);
+}
+
+function showNameInput() {
+  const type = calculateType();
+  const typeData = types[type];
+  
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="card" style="text-align: center;">
+      <span style="font-size: 48px; display: block; margin-bottom: 16px;">🎉</span>
+      <h2 style="font-size: 22px; margin-bottom: 8px;">
+        ${currentLang === 'ko' ? '분석 완료!' : 'Analysis Complete!'}
+      </h2>
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">
+        ${currentLang === 'ko' ? '결과를 확인하려면 이름을 입력해주세요' : 'Enter your name to see your result'}
+      </p>
+      <input type="text" id="userName" placeholder="${currentLang === 'ko' ? '이름 입력' : 'Enter your name'}" 
+        style="width: 100%; padding: 14px 16px; font-size: 16px; border: 1px solid var(--border); 
+        border-radius: 12px; background: rgba(255,255,255,0.05); color: var(--text); 
+        margin-bottom: 16px; outline: none;"
+        onfocus="this.style.borderColor='var(--primary)'"
+        onblur="this.style.borderColor='var(--border)'"
+      />
+      <button class="btn btn-primary" onclick="submitAndShowResult()" id="submitBtn">
+        ${currentLang === 'ko' ? '결과 보기' : 'See Result'}
+      </button>
+      <p id="errorMsg" style="color: var(--accent); font-size: 13px; margin-top: 12px; display: none;">
+        ${currentLang === 'ko' ? '이름을 입력해주세요' : 'Please enter your name'}
+      </p>
+    </div>
+  `;
+  
+  // Enter 키로 제출
+  document.getElementById('userName').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') submitAndShowResult();
+  });
+}
+
+async function submitAndShowResult() {
+  const nameInput = document.getElementById('userName');
+  const name = nameInput.value.trim();
+  const errorMsg = document.getElementById('errorMsg');
+  const submitBtn = document.getElementById('submitBtn');
+  
+  if (!name) {
+    errorMsg.textContent = currentLang === 'ko' ? '이름을 입력해주세요' : 'Please enter your name';
+    errorMsg.style.display = 'block';
+    nameInput.style.borderColor = 'var(--accent)';
+    return;
+  }
+  
+  // 버튼 로딩 상태
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = currentLang === 'ko' ? '확인 중...' : 'Checking...';
+  errorMsg.style.display = 'none';
+  
+  const type = calculateType();
+  const typeData = types[type];
+  const scriptUrl = 'https://script.google.com/macros/s/AKfycbwPTBygGyCBw_R9kxWhc-dAB4MoshzjQEtFpZIevS2cj4LRQAt-Gp2ubay7VhiDZF8d/exec';
+  
+  try {
+    // 1. 먼저 이름 중복 체크
+    const checkUrl = `${scriptUrl}?action=check&name=${encodeURIComponent(name)}`;
+    const checkResponse = await fetch(checkUrl);
+    const checkResult = await checkResponse.json();
+    
+    if (checkResult.exists) {
+      // 중복된 이름 존재
+      errorMsg.textContent = currentLang === 'ko' ? '이미 등록된 이름입니다. 다른 이름을 입력해주세요.' : 'This name already exists. Please enter a different name.';
+      errorMsg.style.display = 'block';
+      nameInput.style.borderColor = 'var(--accent)';
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = currentLang === 'ko' ? '결과 보기' : 'See Result';
+      return;
+    }
+    
+    // 2. 중복 아니면 저장
+    submitBtn.innerHTML = currentLang === 'ko' ? '저장 중...' : 'Saving...';
+    const saveUrl = `${scriptUrl}?action=save&name=${encodeURIComponent(name)}&typeCode=${encodeURIComponent(type)}&typeName=${encodeURIComponent(typeData.name.ko)}`;
+    
+    // 이미지 태그로 CORS 우회하여 저장
+    const img = new Image();
+    img.src = saveUrl;
+    
+    // 제출 후 결과 보기
+    showResult();
+    
+  } catch (e) {
+    console.log('Error:', e);
+    // 네트워크 오류 시에도 결과는 보여줌 (저장만 실패)
+    const fallbackUrl = `${scriptUrl}?name=${encodeURIComponent(name)}&typeCode=${encodeURIComponent(type)}&typeName=${encodeURIComponent(typeData.name.ko)}`;
+    const img = new Image();
+    img.src = fallbackUrl;
+    showResult();
+  }
+}
+
+function calculateType() {
+  // 히든 유형 체크: 모든 축의 차이가 정확히 0이면 퍼펙트 밸런서 (옵션 C)
+  // 발동 조건: 12문항 모두 C(균형) 옵션 선택 시에만 발동 (~0.6% 확률)
+  const isBalanced = 
+    Math.abs(scores.T - scores.P) === 0 &&
+    Math.abs(scores.S - scores.E) === 0 &&
+    Math.abs(scores.So - scores.Ex) === 0 &&
+    Math.abs(scores.A - scores.I) === 0;
+  
+  if (isBalanced) {
+    return "BALANCE";
+  }
+  
+  // 일반 유형 계산
+  // 축1: Tech vs People
+  const axis1 = scores.T >= scores.P ? 'T' : 'P';
+  // 축2: Structural vs Experimental  
+  const axis2 = scores.S >= scores.E ? 'S' : 'E';
+  // 축3: Solve vs Explore
+  const axis3 = scores.So >= scores.Ex ? 'So' : 'Ex';
+  // 축4: Archive vs Interaction
+  const axis4 = scores.A >= scores.I ? 'A' : 'I';
+  
+  return `${axis1}${axis2}-${axis3}-${axis4}`;
+}
+
+function showResult() {
+  const type = calculateType();
+  const typeData = types[type];
+  
+  if (!typeData) {
+    console.error('Type not found:', type);
+    return;
+  }
+  
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="card">
+      <div class="result-header">
+        ${typeData.imageUrl ? `<img src="${typeData.imageUrl}" alt="${typeData.name[currentLang]}" class="result-image-large" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">` : ''}
+        <span class="result-emoji" ${typeData.imageUrl ? 'style="display:none;"' : ''}>${typeData.emoji}</span>
+        <h2 class="result-name">${typeData.name[currentLang]}</h2>
+        <p class="result-name-en">${typeData.nameEn}</p>
+        <p class="result-subtitle">${typeData.subtitle[currentLang]}</p>
+        <p class="result-code-small">${type}</p>
+      </div>
+      
+      <div class="result-desc">${typeData.description[currentLang]}</div>
+      
+      <div class="quote-box">${typeData.quote[currentLang]}</div>
+    </div>
+    
+    <div class="card">
+      <h3 class="section-title">${t('strengths')}</h3>
+      <ul class="strength-list">
+        ${typeData.strengths[currentLang].map(s => `<li class="strength-item">${s}</li>`).join('')}
+      </ul>
+    </div>
+    
+    <div class="card">
+      <h3 class="section-title">${t('weakness')}</h3>
+      <div class="weakness-box">${typeData.weakness[currentLang]}</div>
+    </div>
+    
+    <div class="card">
+      <h3 class="section-title">${t('growth')}</h3>
+      <div class="growth-box">${typeData.growth[currentLang]}</div>
+    </div>
+    
+    <div class="card">
+      <h3 class="section-title">${t('bestMatch')}</h3>
+      <div class="match-card">
+        <p class="match-label">💕 ${currentLang === 'ko' ? '보완 시너지' : 'Complementary Synergy'}</p>
+        <p class="match-name-large">${typeData.bestMatch1.name[currentLang]}</p>
+        <p class="match-code-small">${typeData.bestMatch1.code}</p>
+        <p class="match-reason">${typeData.bestMatch1.reason[currentLang]}</p>
+      </div>
+      <div class="match-card">
+        <p class="match-label">✨ ${currentLang === 'ko' ? '강점 시너지' : 'Strength Synergy'}</p>
+        <p class="match-name-large">${typeData.bestMatch2.name[currentLang]}</p>
+        <p class="match-code-small">${typeData.bestMatch2.code}</p>
+        <p class="match-reason">${typeData.bestMatch2.reason[currentLang]}</p>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h3 class="section-title">${t('clubFit')}</h3>
+      <div class="club-fit">
+        ${typeData.clubFit[currentLang].map(c => `<span class="club-tag">${c}</span>`).join('')}
+      </div>
+    </div>
+    
+    <div class="card">
+      <h3 class="section-title">${t('keywords')}</h3>
+      <div class="keyword-container">
+        ${typeData.keywords[currentLang].map(k => `<span class="keyword">#${k}</span>`).join('')}
+      </div>
+    </div>
+    
+    <div class="card">
+      <h3 class="section-title">📊 ${currentLang === 'ko' ? '나의 성향 분석' : 'My Tendency Analysis'}</h3>
+      <div class="score-bar-container">
+        <div class="score-item">
+          <div class="score-label">
+            <span>Tech ${scores.T}</span>
+            <span>People ${scores.P}</span>
+          </div>
+          <div class="score-bar">
+            <div class="score-left" style="width: ${scores.T + scores.P > 0 ? (scores.T / (scores.T + scores.P)) * 100 : 50}%"></div>
+            <div class="score-right" style="width: ${scores.T + scores.P > 0 ? (scores.P / (scores.T + scores.P)) * 100 : 50}%"></div>
+          </div>
+        </div>
+        <div class="score-item">
+          <div class="score-label">
+            <span>Structural ${scores.S}</span>
+            <span>Experimental ${scores.E}</span>
+          </div>
+          <div class="score-bar">
+            <div class="score-left" style="width: ${scores.S + scores.E > 0 ? (scores.S / (scores.S + scores.E)) * 100 : 50}%"></div>
+            <div class="score-right" style="width: ${scores.S + scores.E > 0 ? (scores.E / (scores.S + scores.E)) * 100 : 50}%"></div>
+          </div>
+        </div>
+        <div class="score-item">
+          <div class="score-label">
+            <span>Solve ${scores.So}</span>
+            <span>Explore ${scores.Ex}</span>
+          </div>
+          <div class="score-bar">
+            <div class="score-left" style="width: ${scores.So + scores.Ex > 0 ? (scores.So / (scores.So + scores.Ex)) * 100 : 50}%"></div>
+            <div class="score-right" style="width: ${scores.So + scores.Ex > 0 ? (scores.Ex / (scores.So + scores.Ex)) * 100 : 50}%"></div>
+          </div>
+        </div>
+        <div class="score-item">
+          <div class="score-label">
+            <span>Archive ${scores.A}</span>
+            <span>Interaction ${scores.I}</span>
+          </div>
+          <div class="score-bar">
+            <div class="score-left" style="width: ${scores.A + scores.I > 0 ? (scores.A / (scores.A + scores.I)) * 100 : 50}%"></div>
+            <div class="score-right" style="width: ${scores.A + scores.I > 0 ? (scores.I / (scores.A + scores.I)) * 100 : 50}%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="share-buttons">
+      <button class="btn btn-save" onclick="saveResultImage()">${t('saveImage')}</button>
+      <button class="btn btn-share" onclick="shareResult()">${t('shareResult')}</button>
+    </div>
+    
+    <button class="btn btn-secondary" onclick="showAllTypes()">${t('viewAll')}</button>
+    <button class="btn btn-primary" onclick="restart()">${t('restart')}</button>
+  `;
+}
+
+function showAllTypes() {
+  const myType = calculateType();
+  
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="card">
+      <h3 class="section-title">🎮 ${currentLang === 'ko' ? '전체 16개 유형' : 'All 16 Types'}</h3>
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;">
+        ${currentLang === 'ko' ? '나의 유형은 하이라이트 표시됩니다' : 'Your type is highlighted'}
+        ${myType === 'BALANCE' ? `<br><span style="color: var(--accent);">🎭 ${currentLang === 'ko' ? '히든 유형 발견!' : 'Hidden type discovered!'}</span>` : ''}
+      </p>
+      <div class="type-grid">
+        ${Object.entries(types).filter(([code]) => code !== 'BALANCE').map(([code, data]) => `
+          <div class="type-card ${code === myType ? 'highlight' : ''}" onclick="showTypeDetail('${code}')">
+            ${data.imageUrl ? `<img src="${data.imageUrl}" alt="${data.name[currentLang]}" class="type-thumb" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">` : ''}
+            <div class="type-emoji" ${data.imageUrl ? 'style="display:none;"' : ''}>${data.emoji}</div>
+            <div class="type-code-small">${code}</div>
+            <div class="type-name-small">${data.name[currentLang]}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    
+    <button class="btn btn-secondary" onclick="showResult()">${t('back')}</button>
+    <button class="btn btn-primary" onclick="restart()">${t('restart')}</button>
+  `;
+}
+
+function showTypeDetail(code) {
+  const typeData = types[code];
+  const myType = calculateType();
+  
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="card">
+      <div class="result-header">
+        ${typeData.imageUrl ? `<img src="${typeData.imageUrl}" alt="${typeData.name[currentLang]}" class="result-image-large" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">` : ''}
+        <span class="result-emoji" ${typeData.imageUrl ? 'style="display:none;"' : ''}>${typeData.emoji}</span>
+        <h2 class="result-name">${typeData.name[currentLang]}</h2>
+        <p class="result-name-en">${typeData.nameEn}</p>
+        <p class="result-subtitle">${typeData.subtitle[currentLang]}</p>
+        <p class="result-code-small">${code}</p>
+      </div>
+      
+      <div class="result-desc">${typeData.description[currentLang]}</div>
+      
+      <div class="quote-box">${typeData.quote[currentLang]}</div>
+    </div>
+    
+    <div class="card">
+      <h3 class="section-title">${t('strengths')}</h3>
+      <ul class="strength-list">
+        ${typeData.strengths[currentLang].map(s => `<li class="strength-item">${s}</li>`).join('')}
+      </ul>
+    </div>
+    
+    <div class="card">
+      <h3 class="section-title">${t('bestMatch')}</h3>
+      <div class="match-card">
+        <p class="match-label">💕 ${currentLang === 'ko' ? '보완 시너지' : 'Complementary Synergy'}</p>
+        <p class="match-name-large">${typeData.bestMatch1.name[currentLang]}</p>
+        <p class="match-code-small">${typeData.bestMatch1.code}</p>
+        <p class="match-reason">${typeData.bestMatch1.reason[currentLang]}</p>
+      </div>
+      <div class="match-card">
+        <p class="match-label">✨ ${currentLang === 'ko' ? '강점 시너지' : 'Strength Synergy'}</p>
+        <p class="match-name-large">${typeData.bestMatch2.name[currentLang]}</p>
+        <p class="match-code-small">${typeData.bestMatch2.code}</p>
+        <p class="match-reason">${typeData.bestMatch2.reason[currentLang]}</p>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h3 class="section-title">${t('clubFit')}</h3>
+      <div class="club-fit">
+        ${typeData.clubFit[currentLang].map(c => `<span class="club-tag">${c}</span>`).join('')}
+      </div>
+    </div>
+    
+    <button class="btn btn-secondary" onclick="showAllTypes()">${t('viewAll')}</button>
+    ${code === myType ? '' : `<button class="btn btn-secondary" onclick="showResult()">${t('back')}</button>`}
+    <button class="btn btn-primary" onclick="restart()">${t('restart')}</button>
+  `;
+}
+
+function restart() {
+  currentQuestion = 0;
+  scores = { T: 0, P: 0, S: 0, E: 0, So: 0, Ex: 0, A: 0, I: 0 };
+  showStart();
+}
+
+// ============ 공유/저장 기능 ============
+function showToast(message) {
+  // 기존 토스트 제거
+  const existingToast = document.querySelector('.toast');
+  if (existingToast) existingToast.remove();
+  
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  
+  setTimeout(() => toast.classList.add('show'), 10);
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 2500);
+}
+
+function shareResult() {
+  const type = calculateType();
+  const typeData = types[type];
+  const shareUrl = window.location.href.split('?')[0];
+  const shareText = currentLang === 'ko' 
+    ? `나의 KDC 클러버 유형은 "${typeData.name.ko}"입니다! 🎮\n${typeData.subtitle.ko}\n\n나도 테스트하기 👉 ${shareUrl}`
+    : `My KDC Clubber type is "${typeData.name.en}"! 🎮\n${typeData.subtitle.en}\n\nTake the test 👉 ${shareUrl}`;
+  
+  // Web Share API 지원 여부 확인 (모바일)
+  if (navigator.share) {
+    navigator.share({
+      title: currentLang === 'ko' ? 'KDC 클러버 성향 테스트' : 'KDC Clubber Type Test',
+      text: shareText,
+      url: shareUrl
+    }).catch((err) => {
+      // 공유 취소가 아닌 경우에만 클립보드 복사
+      if (err.name !== 'AbortError') {
+        copyToClipboard(shareText);
+      }
+    });
+  } else {
+    // PC에서는 전체 텍스트 복사
+    copyToClipboard(shareText);
+  }
+}
+
+function copyToClipboard(text) {
+  // 1차 시도: Clipboard API
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast(t('copySuccess'));
+    }).catch(() => {
+      // 실패시 fallback
+      fallbackCopy(text);
+    });
+  } else {
+    // Clipboard API 미지원시 fallback
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  // textarea를 이용한 전통적인 복사 방법
+  const textarea = document.createElement('textarea');
+  textarea.value = text;
+  textarea.style.cssText = 'position: fixed; left: -9999px; top: 0;';
+  document.body.appendChild(textarea);
+  textarea.focus();
+  textarea.select();
+  
+  try {
+    const successful = document.execCommand('copy');
+    if (successful) {
+      showToast(t('copySuccess'));
+    } else {
+      showToast(t('copyFail'));
+    }
+  } catch (err) {
+    showToast(t('copyFail'));
+  }
+  
+  document.body.removeChild(textarea);
+}
+
+async function saveResultImage() {
+  const type = calculateType();
+  const typeData = types[type];
+  
+  // 저장 버튼 비활성화 및 로딩 표시
+  const saveBtn = event.target;
+  const originalText = saveBtn.textContent;
+  saveBtn.textContent = t('saving');
+  saveBtn.disabled = true;
+  
+  try {
+    // 결과 카드만 캡처하기 위한 영역 생성
+    const captureArea = document.createElement('div');
+    captureArea.style.cssText = `
+      position: fixed; left: -9999px; top: 0;
+      width: 440px; padding: 24px;
+      background: linear-gradient(180deg, #0a0a0f 0%, #12121a 100%);
+      font-family: 'Noto Sans KR', sans-serif;
+    `;
+    
+    captureArea.innerHTML = `
+      <div style="text-align: center; padding: 20px 0;">
+        <div style="display: inline-block; background: linear-gradient(135deg, #6366f1, #22d3ee); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; letter-spacing: 1px; margin-bottom: 16px; color: white;">KDC CLUB S2</div>
+        ${typeData.imageUrl ? `<img src="${typeData.imageUrl}" crossorigin="anonymous" style="width: 100%; max-width: 380px; aspect-ratio: 1/1; border-radius: 20px; object-fit: cover; margin-bottom: 20px; border: 4px solid #6366f1; display: block; margin-left: auto; margin-right: auto;">` : `<div style="font-size: 80px; margin-bottom: 16px;">${typeData.emoji}</div>`}
+        <h2 style="font-size: 28px; font-weight: 900; margin-bottom: 4px; color: #e2e8f0;">${typeData.name[currentLang]}</h2>
+        <p style="font-size: 14px; color: #94a3b8; margin-bottom: 12px;">${typeData.nameEn}</p>
+        <p style="font-size: 16px; color: #22d3ee; font-weight: 500;">${typeData.subtitle[currentLang]}</p>
+        <p style="font-size: 11px; color: #94a3b8; margin-top: 12px; opacity: 0.6; letter-spacing: 1px;">${type}</p>
+      </div>
+      <div style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(34, 211, 238, 0.1)); border-left: 3px solid #6366f1; padding: 16px 20px; border-radius: 0 12px 12px 0; font-style: italic; color: #e2e8f0; margin-top: 16px;">
+        ${typeData.quote[currentLang]}
+      </div>
+      <div style="text-align: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08);">
+        <p style="font-size: 12px; color: #94a3b8;">hyeonheebee.github.io/kdc-s2-test</p>
+      </div>
+    `;
+    
+    document.body.appendChild(captureArea);
+    
+    // 이미지 로딩 대기
+    const img = captureArea.querySelector('img');
+    if (img) {
+      await new Promise((resolve, reject) => {
+        if (img.complete) {
+          resolve();
+        } else {
+          img.onload = resolve;
+          img.onerror = () => {
+            // 이미지 로드 실패시 이모지로 대체
+            img.style.display = 'none';
+            resolve();
+          };
+        }
+      });
+    }
+    
+    // html2canvas로 캡처
+    const canvas = await html2canvas(captureArea, {
+      backgroundColor: '#0a0a0f',
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      logging: false
+    });
+    
+    document.body.removeChild(captureArea);
+    
+    // 이미지 다운로드
+    const link = document.createElement('a');
+    link.download = `KDC_${typeData.name[currentLang]}_${type}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    
+    showToast(currentLang === 'ko' ? '이미지가 저장되었습니다!' : 'Image saved!');
+    
+  } catch (error) {
+    console.error('Image save error:', error);
+    showToast(currentLang === 'ko' ? '이미지 저장에 실패했습니다.' : 'Failed to save image.');
+  } finally {
+    saveBtn.textContent = originalText;
+    saveBtn.disabled = false;
+  }
+}
+
+// 초기화
+document.addEventListener('DOMContentLoaded', showStart);
+</script>
+</body>
+</html>
